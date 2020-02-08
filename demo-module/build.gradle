@@ -1,0 +1,9 @@
+plugins {
+    id 'io.quarkus'
+}
+
+apply plugin: 'com.apollographql.apollo'
+
+dependencies {
+    implementation("com.apollographql.apollo:apollo-runtime:1.3.0")
+}

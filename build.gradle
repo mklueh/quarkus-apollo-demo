@@ -1,0 +1,74 @@
+buildscript {
+
+    repositories {
+        jcenter()
+        mavenCentral()
+        gradlePluginPortal()
+    }
+
+    dependencies {
+        classpath("com.apollographql.apollo:apollo-gradle-plugin:1.3.0")
+    }
+
+}
+
+apply plugin: 'java'
+apply plugin: 'idea'
+
+group = 'quarkus.demo'
+version = '1.0'
+
+
+subprojects {
+
+    apply plugin: 'java'
+
+    compileJava {
+        options.compilerArgs << '-parameters'
+    }
+
+    java {
+        sourceCompatibility = JavaVersion.VERSION_11
+        targetCompatibility = JavaVersion.VERSION_11
+    }
+
+    test {
+        dependsOn 'cleanTest'
+        dependsOn 'quarkusTestConfig'
+        useJUnitPlatform()
+        forkEvery 1
+    }
+
+    repositories {
+        jcenter()
+        mavenCentral()
+    }
+
+    dependencies {
+
+        compileOnly 'org.projectlombok:lombok:1.18.10'
+        annotationProcessor 'org.projectlombok:lombok:1.18.10'
+
+        // Undertow - Servlet support
+        implementation "io.quarkus:quarkus-undertow"
+        implementation "io.quarkus:quarkus-resteasy"
+        implementation "io.quarkus:quarkus-resteasy-jsonb"
+
+        // If not already on your classpath, you might need the jetbrains annotations
+        compileOnly("org.jetbrains:annotations:13.0")
+        testCompileOnly("org.jetbrains:annotations:13.0")
+
+        testImplementation 'org.apache.maven.plugins:maven-surefire-plugin:2.22.1'
+        testImplementation 'io.quarkus:quarkus-jdbc-h2'
+        testImplementation 'io.quarkus:quarkus-junit5'
+        testImplementation 'io.rest-assured:rest-assured'
+
+        implementation enforcedPlatform("${quarkusPlatformGroupId}:${quarkusPlatformArtifactId}:${quarkusPlatformVersion}")
+    }
+}
+
+configurations {
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+}
